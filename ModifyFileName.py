@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-09 11:42:15
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-09 12:51:54
+LastEditTime: 2022-08-09 13:01:16
 FilePath: /Python-tools/ModifyFileName.py
 Description: 
 
@@ -14,7 +14,7 @@ import pandas as pd
 import random
 
 random.seed(0)
-folder_path = '/Users/peixinhua/Downloads/responseOne'
+folder_path = '/Users/peixinhua/Downloads/responseMx'
 output_path = '/Users/peixinhua/Downloads/output'
 # get all files from target folder
 file_list = os.listdir(folder_path)
