@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-10 12:43:30
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-10 13:24:58
+LastEditTime: 2022-08-10 13:26:24
 FilePath: /Python-tools/DataFrameInstruction.py
 Description: 
 
@@ -14,7 +14,7 @@ import pandas as pd
 
 #测试数据。
 df = pd.DataFrame(data = [['lisa','f',22],['joy','f',22],['tom','m','21']],index = [1,2,3],columns = ['name','sex','age'])
-
+print(df)
 # 增
 # 按列增加
 citys = ['ny','zz','xy']
@@ -24,7 +24,7 @@ jobs = ['student','AI','teacher']
 #默认在df最后一列加上column名称为job，值为jobs的数据。
 df['job'] = jobs 
 #在df最后一列加上column名称为salary，值为等号右边数据。
-df.loc[:,'salary'] = ['1k','2k','2k','2k','3k']
+# df.loc[:,'salary'] = ['1k','2k','2k','2k','3k']
 # 按行增加
 #若df中没有index为“4”的这一行的话，该行代码作用是往df中加一行index为“4”，值为等号右边值的数据。
 #若df中已经有index为“4”的这一行，则该行代码作用是把df中index为“4”的这一行修改为等号右边数据。
