@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-10 20:48:19
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-11 12:41:24
+LastEditTime: 2022-08-11 12:43:40
 FilePath: /Python-tools/Matplotlib.py
 Description: 
 
@@ -52,6 +52,34 @@ plt.show()
 import matplotlib.pyplot as plt
 import numpy as np
  
+ """
+  A crosshair cursor that spans the axes and moves with mouse cursor.
+ 
+  For the cursor to remain responsive you must keep a reference to it.
+ 
+  Parameters
+  ----------
+  ax : `matplotlib.axes.Axes`
+    The `~.axes.Axes` to attach the cursor to.
+  horizOn : bool, default: True
+    Whether to draw the horizontal line.
+  vertOn : bool, default: True
+    Whether to draw the vertical line.
+  useblit : bool, default: False
+    Use blitting for faster drawing if supported by the backend.
+ 
+  Other Parameters
+  ----------------
+  **lineprops
+    `.Line2D` properties that control the appearance of the lines.
+    See also `~.Axes.axhline`.
+ 
+  Examples
+  --------
+  See :doc:`/gallery/widgets/cursor`.
+  """
+
+
 class SnappingCursor:
   """
   A cross hair cursor that snaps to the data point of a line, which is
