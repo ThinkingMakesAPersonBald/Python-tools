@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-12 10:16:04
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-12 12:23:26
+LastEditTime: 2022-08-12 12:33:02
 FilePath: /Python-tools/PandasUseCase.py
 Description: 
 
@@ -12,6 +12,7 @@ Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved.
 from genericpath import isdir
 import os
 import sys
+from unittest import result
 import pandas as pd
 
 file_dire = '/Users/peixinhua/Downloads'
@@ -32,10 +33,12 @@ for path, dir_list, file_list in g:
             value = file_name.split(".")
             df.insert(0,'file_name',value[0])
             df.insert(0,'gender','Female')
+            df.insert(0,'value',df['file_name'].str.split('.').str[0])
             df_list.append(df)
 
 merge_df = pd.concat(df_list)
-merge_df.to_excel(output_path + os.sep + 'output.xlsx')
+# merge_df.to_excel(output_path + os.sep + 'output.xlsx')
+print('merge_df {}'.format(merge_df))
 
 mapping_df: pd.DataFrame
 for path, dir_list, file_list in mapping_g:
@@ -45,9 +48,8 @@ for path, dir_list, file_list in mapping_g:
             mapping_df['old_name'] = mapping_df['old_name'].str.split('/').str[-1]
             mapping_df['new_name'] = mapping_df['new_name'].str.split('/').str[-1]
             interval_df = mapping_df['old_name'].str.split('.').str[0].str[44:]
-            print('interval_df \n {}'.format(interval_df))
             mapping_df.insert(3,'interval',interval_df)
             mapping_df.insert(4,'value',mapping_df['new_name'].str.split('.').str[0])
             print('mapping_df {}'.format(mapping_df))
-            
-# print("mapping_df {}".format(mapping_df))
+result = pd.merge(merge_df,mapping_df,how='left',on='value')
+print("result {}".format(result))
