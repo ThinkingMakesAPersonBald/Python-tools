@@ -16,7 +16,7 @@ sql_port    = 3306
 sql_db_name = 'mysql'
 
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import MetaData, inspect, create_engine
 from sqlalchemy.types import CHAR,INT
 
 connect_info = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(
@@ -32,6 +32,7 @@ sql = 'SELECT * FROM test'
 df = pd.read_sql(sql= sql,con= engine)
 
 print('df:',df)
+
 
 # write df to table 'test'
 data = {
