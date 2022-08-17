@@ -18,3 +18,14 @@ elif os.path.isfile(path):
     print("it's a normal file")
 else:
     print("it's a special file(socket,FIFO,device file)")
+
+if not os.path.exists(path):
+    os.makedirs(path)
+
+file_dire = '/Users/peixinhua/Downloads'
+
+g = os.walk(file_dire)
+
+for path, dir_list, file_list in g:
+    for file_name in file_list:
+        print(os.path.join(path, file_name))
