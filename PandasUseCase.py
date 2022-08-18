@@ -2,22 +2,20 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-12 10:16:04
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-12 12:33:02
+LastEditTime: 2022-08-18 12:00:19
 FilePath: /Python-tools/PandasUseCase.py
 Description: 
 
 Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved. 
 '''
 
-from genericpath import isdir
 import os
 import sys
-from unittest import result
 import pandas as pd
 
-file_dire = '/Users/peixinhua/Downloads'
-output_path = '/Users/peixinhua/Desktop/Comfortable response time/output'
-mapping_path = '/Users/peixinhua/Desktop/Comfortable response time/mapping'
+file_dire = '/Users/peixinhua/Downloads/Comfortable response time'
+output_path = '/Users/peixinhua/Downloads/output'
+mapping_path = '/Users/peixinhua/Downloads/mapping'
 g = os.walk(file_dire)
 mapping_g = os.walk(mapping_path)
 df_list = []
@@ -33,11 +31,11 @@ for path, dir_list, file_list in g:
             value = file_name.split(".")
             df.insert(0,'file_name',value[0])
             df.insert(0,'gender','Female')
-            df.insert(0,'value',df['file_name'].str.split('.').str[0])
+            df.insert(0,'value',df['File name'].str.split('.').str[0])
             df_list.append(df)
 
 merge_df = pd.concat(df_list)
-# merge_df.to_excel(output_path + os.sep + 'output.xlsx')
+merge_df.to_excel(os.path.join(output_path,'output1.xlsx'))
 print('merge_df {}'.format(merge_df))
 
 mapping_df: pd.DataFrame
@@ -52,4 +50,5 @@ for path, dir_list, file_list in mapping_g:
             mapping_df.insert(4,'value',mapping_df['new_name'].str.split('.').str[0])
             print('mapping_df {}'.format(mapping_df))
 result = pd.merge(merge_df,mapping_df,how='left',on='value')
+result.to_excel(os.path.join(output_path,'output2.xlsx'))
 print("result {}".format(result))
