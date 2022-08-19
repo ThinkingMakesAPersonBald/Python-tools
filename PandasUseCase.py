@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-12 10:16:04
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-18 12:00:19
+LastEditTime: 2022-08-18 14:55:38
 FilePath: /Python-tools/PandasUseCase.py
 Description: 
 
@@ -10,6 +10,7 @@ Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved.
 '''
 
 import os
+import re
 import sys
 import pandas as pd
 
@@ -26,7 +27,7 @@ if not os.path.exists(output_path):
 for path, dir_list, file_list in g:
     for file_name in file_list:
         if ".xlsx" in file_name:
-            print('file name {}'.format(file_name))
+            # print('file name {}'.format(file_name))
             df = pd.read_excel(os.path.join(path,file_name))
             value = file_name.split(".")
             df.insert(0,'file_name',value[0])
@@ -36,7 +37,7 @@ for path, dir_list, file_list in g:
 
 merge_df = pd.concat(df_list)
 merge_df.to_excel(os.path.join(output_path,'output1.xlsx'))
-print('merge_df {}'.format(merge_df))
+# print('merge_df {}'.format(merge_df))
 
 mapping_df: pd.DataFrame
 for path, dir_list, file_list in mapping_g:
@@ -48,7 +49,7 @@ for path, dir_list, file_list in mapping_g:
             interval_df = mapping_df['old_name'].str.split('.').str[0].str[44:]
             mapping_df.insert(3,'interval',interval_df)
             mapping_df.insert(4,'value',mapping_df['new_name'].str.split('.').str[0])
-            print('mapping_df {}'.format(mapping_df))
+            # print('mapping_df {}'.format(mapping_df))
 result = pd.merge(merge_df,mapping_df,how='left',on='value')
+
 result.to_excel(os.path.join(output_path,'output2.xlsx'))
-print("result {}".format(result))
