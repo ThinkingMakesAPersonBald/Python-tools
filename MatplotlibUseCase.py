@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-19 16:49:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-19 17:50:40
+LastEditTime: 2022-08-19 18:28:07
 FilePath: /Python-tools/MatplotlibUseCase.py
 Description: 
 
@@ -15,8 +15,29 @@ import numpy as np
 import pandas as pd
 import matplotlib.ticker as mtick
 from matplotlib.pylab import MultipleLocator
+import matplotlib.font_manager as fm
+from matplotlib import rcParams
+
+
+
+# font = {'family' : 'DFKai-SB',
+#         # 'weight' : 'bold',
+#         # 'size'   : '16'
+#         }
+# plt.rc('font', **font)  # pass in the font dict as kwargs
+# plt.rc('axes',unicode_minus=False)
+# rcParams['font.family'] = 'serif'
+# rcParams['font.serif'] = 'Simsun (founder extended)'
+
 
 def draw_curve():
+    # 查找字体路径
+    # print(matplotlib.matplotlib_fname())
+    # 查找字体缓存路径
+    # print(matplotlib.get_cachedir())
+    # rcParams['font.family'] = 'serif'
+    # rcParams['font.sans-serif']='SimSong'
+    # rcParams['font.serif'] = 'SimSong'
     file_path = '/Users/peixinhua/Downloads/Comfortable data calculate.xlsx'
     excel_df = pd.read_excel(file_path)
     x = excel_df['Interval']
@@ -27,11 +48,16 @@ def draw_curve():
     y5 = excel_df['太快了，接受不了']
     
     fig,ax = plt.subplots()
-    ax.plot(np.array(x),np.array(y1) * 100,label= '太慢了，接受不了')
-    ax.plot(np.array(x),np.array(y2) * 100,label= '有点慢，能够接受')
-    ax.plot(np.array(x),np.array(y3) * 100,label= '刚刚好')
-    ax.plot(np.array(x),np.array(y4) * 100,label= '有点快，能够接受')
-    ax.plot(np.array(x),np.array(y5) * 100,label= '太快了，接受不了')
+    #太慢了，接受不了
+    ax.plot(np.array(x),np.array(y1) * 100,label= 'Too slow to accept')
+    #有点慢，能够接受
+    ax.plot(np.array(x),np.array(y2) * 100,label= 'A bit slow, acceptable')
+    #刚刚好
+    ax.plot(np.array(x),np.array(y3) * 100,label= 'Just right')
+    #有点快，能够接受
+    ax.plot(np.array(x),np.array(y4) * 100,label= 'A bit fast, acceptable')
+    #太快了，接受不了
+    ax.plot(np.array(x),np.array(y5) * 100,label= 'Too fast to accept')
     
     fmt = '%0.1f%%'
     yticks = mtick.FormatStrFormatter(fmt)
@@ -50,7 +76,9 @@ def draw_curve():
     ax.set_title('Robot comfortable response time of Mexico')
     ax.legend()
     ax.grid(True)
+    plt.rcParams['font.sans-serif']=['Simhei']
     plt.xticks(rotation=-60)
+    fig.tight_layout()
     plt.show()
 
 if __name__ == '__main__':
