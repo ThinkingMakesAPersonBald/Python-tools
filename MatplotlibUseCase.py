@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-19 16:49:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-19 21:34:39
+LastEditTime: 2022-08-23 11:36:56
 FilePath: /Python-tools/MatplotlibUseCase.py
 Description: 
 
@@ -38,7 +38,7 @@ def draw_curve():
     # rcParams['font.family'] = 'serif'
     # rcParams['font.sans-serif']='SimSong'
     # rcParams['font.serif'] = 'SimSong'
-    file_path = '/Users/peixinhua/Downloads/Comfortable data calculate indonesia.xlsx'
+    file_path = '/Users/peixinhua/Downloads/Indonesia comfortable response time Male.xlsx'
     excel_df = pd.read_excel(file_path)
     x = excel_df['Interval']
     y1 = excel_df['太慢了，接受不了']
