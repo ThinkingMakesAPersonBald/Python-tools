@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-25 13:51:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-26 14:39:41
+LastEditTime: 2022-08-26 15:02:03
 FilePath: /Python-tools/DialogueEffectCompare.py
 Description: AIRudder 对话效果数据对比
 
@@ -11,7 +11,6 @@ Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved.
 
 from cProfile import label
 import os
-from re import I
 from tkinter import font
 from turtle import screensize, title, width
 import numpy as np
@@ -23,31 +22,23 @@ import pandas as pd
 data_dire_path = '/Users/peixinhua/Downloads'
 file_name = 'Meaningful interrupt & Action revoke数据20220824.xlsx'
 robot_list_file_name = 'AB test robot list.xlsx'
-
+parameter_list = ['Control group Robot ID','Test group Robot ID','Test type','Scenes']
 
 def read_excel_data():
-    i = 1
     robot_list_df = pd.read_excel(os.path.join(data_dire_path,robot_list_file_name),sheet_name='Sheet2')
     for row in robot_list_df.index:
-        # print('row {}'.format(robot_list_df.loc[row]))
-        control_id = robot_list_df.loc[row]['Control group Robot ID']
-        test_id = robot_list_df.loc[row]['Test group Robot ID']
-        test_type = robot_list_df.loc[row]['Test type']
-        scenes = robot_list_df.loc[row]['Scenes']
-        get_robot_data(control_robot_id=control_id,
-                        test_robot_id= test_id,
-                        test_type= test_type,
-                        scenes= scenes
-        )
-        i += 1
-        if i > 1:
-            return
+        dictionary = {} 
+        for i in parameter_list:
+            value = robot_list_df.loc[row][i]
+            dictionary[i] = value
+        get_robot_data(paras= dictionary)
 
-def get_robot_data(control_robot_id,test_robot_id,test_type,scenes):
+def get_robot_data(paras):
     original_df = pd.read_excel(os.path.join(data_dire_path,file_name))
+    control_robot_id = paras['Control group Robot ID']
+    test_robot_id = paras['Test group Robot ID']
     filter_df = original_df[(original_df['robot_id']==control_robot_id) | (original_df['robot_id']==test_robot_id)]
-    draw_chart(show_df= filter_df,control_robot_id=control_robot_id,test_robot_id=test_robot_id)
-    # print('filter_df {} \n'.format(filter_df))
+    draw_chart(show_df= filter_df,paras= paras)
 
 def convert_day_format(value):
     '''
@@ -62,8 +53,6 @@ def pretect_list_crash(values):
     value = 0
     if len(values) > 0:
         value = values[0]
-    # if not isinstance(value,int):
-    #     value = '%.2f'%value
     return value
 
 def data_processing(show_df: pd.DataFrame,list_titles,control_robot_id,test_robot_id):
@@ -91,7 +80,9 @@ def data_processing(show_df: pd.DataFrame,list_titles,control_robot_id,test_robo
     return return_dict
         
 
-def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
+def draw_chart(show_df: pd.DataFrame,paras):
+    control_robot_id = paras['Control group Robot ID']
+    test_robot_id = paras['Test group Robot ID']
     list_titles = ['count','avgbillsec noFG','avgtalkround noFG','A','E']
     return_dict = data_processing(show_df=show_df,list_titles=list_titles,control_robot_id=control_robot_id,test_robot_id=test_robot_id)
     x_axis_data = return_dict['day']
@@ -158,14 +149,14 @@ def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
     plt.tight_layout()
 
     # overview    
-    file_name = 'Comparison of control & test effect({} vs {})'.format(control_robot_id,test_robot_id)
+    type = paras['Test type']
+    scenes = paras['Scenes']
+    file_name = '{} & {} Comparison : ({} vs {})'.format(type,scenes,control_robot_id,test_robot_id)
     out_put_file_name = './' + file_name + '.png'
     plt.suptitle(file_name)
-    # out_put_path = '/Users/peixinhua/Downloads/image'
-    # if os.path.exists(out_put_path):
-    #     os.makedirs(out_put_path)
-    # plt.savefig(os.path.join(out_put_path,file_name + '.jpg'))
+    print('file name {}'.format(file_name))
     plt.savefig(out_put_file_name)
+    plt.tight_layout()
     plt.show()
 
 
