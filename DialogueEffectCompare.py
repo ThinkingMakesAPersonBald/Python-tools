@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-25 13:51:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-26 15:02:03
+LastEditTime: 2022-08-26 16:01:48
 FilePath: /Python-tools/DialogueEffectCompare.py
 Description: AIRudder 对话效果数据对比
 
@@ -31,14 +31,23 @@ def read_excel_data():
         for i in parameter_list:
             value = robot_list_df.loc[row][i]
             dictionary[i] = value
-        get_robot_data(paras= dictionary)
+        original_df = pd.read_excel(os.path.join(data_dire_path,file_name))
+        control_robot_id = dictionary['Control group Robot ID']
+        test_robot_id = dictionary['Test group Robot ID']
+        filter_df = original_df[(original_df['count'] > 200) & ((original_df['robot_id']==control_robot_id) | (original_df['robot_id']==test_robot_id))]
+        # filter_df = filter_df[(original_df['robot_id']==test_robot_id) & ]
+        print('filter_df {}'.format(filter_df))
+        # 只绘制测试机器人count > 0的数据
+        if len(filter_df.values) > 0:
+            # get_robot_data(paras= dictionary)
+            draw_chart(filter_df,paras=dictionary)
 
-def get_robot_data(paras):
-    original_df = pd.read_excel(os.path.join(data_dire_path,file_name))
-    control_robot_id = paras['Control group Robot ID']
-    test_robot_id = paras['Test group Robot ID']
-    filter_df = original_df[(original_df['robot_id']==control_robot_id) | (original_df['robot_id']==test_robot_id)]
-    draw_chart(show_df= filter_df,paras= paras)
+# def get_robot_data(paras):
+#     original_df = pd.read_excel(os.path.join(data_dire_path,file_name))
+#     control_robot_id = paras['Control group Robot ID']
+#     test_robot_id = paras['Test group Robot ID']
+#     filter_df = original_df[(original_df['count'] > 200) & ((original_df['robot_id']==control_robot_id) | (original_df['robot_id']==test_robot_id))]
+#     draw_chart(show_df= filter_df,paras= paras)
 
 def convert_day_format(value):
     '''
@@ -81,6 +90,7 @@ def data_processing(show_df: pd.DataFrame,list_titles,control_robot_id,test_robo
         
 
 def draw_chart(show_df: pd.DataFrame,paras):
+    print('show df:{}'.format(show_df))
     control_robot_id = paras['Control group Robot ID']
     test_robot_id = paras['Test group Robot ID']
     list_titles = ['count','avgbillsec noFG','avgtalkround noFG','A','E']
@@ -151,17 +161,23 @@ def draw_chart(show_df: pd.DataFrame,paras):
     # overview    
     type = paras['Test type']
     scenes = paras['Scenes']
+    aim_path = data_dire_path + '/picture' + '/' + type + '/' + scenes
+    if not os.path.exists(aim_path):
+        os.makedirs(aim_path)
     file_name = '{} & {} Comparison : ({} vs {})'.format(type,scenes,control_robot_id,test_robot_id)
-    out_put_file_name = './' + file_name + '.png'
+    out_put_file_name = file_name + '.png'
     plt.suptitle(file_name)
     print('file name {}'.format(file_name))
-    plt.savefig(out_put_file_name)
+    # plt.savefig(out_put_file_name)
+    # aim_path = data_dire_path + '/picture'
     plt.tight_layout()
-    plt.show()
+    plt.savefig(os.path.join(aim_path,out_put_file_name), format = 'png', dpi = 300)
+    # plt.show()
+    plt.tight_layout()
+    plt.close()
 
 
 if __name__ == '__main__':
     read_excel_data()
-    # draw_chart()
     
     
