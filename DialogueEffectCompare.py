@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-25 13:51:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-26 10:21:36
+LastEditTime: 2022-08-26 11:17:19
 FilePath: /Python-tools/DialogueEffectCompare.py
 Description: AIRudder 对话效果数据对比
 
@@ -58,63 +58,112 @@ def convert_day_format(value):
     return new_value
 
 def pretect_list_crash(values):
+    value = 0
     if len(values) > 0:
-        return values[0]
-    return 0
+        value = values[0]
+    # if not isinstance(value,int):
+    #     value = '%.2f'%value
+    return value
+
+def data_processing(show_df: pd.DataFrame,control_robot_id,test_robot_id):
+    day_df = show_df['day']
+    day_drop_duplicates =  day_df.drop_duplicates(keep="first", inplace=False)
+    day_values = day_drop_duplicates.values
+    list_titles = ['count','avgbillsec noFG','avgtalkround noFG','A']
+    return_dict = {}
+    for title in list_titles:
+        control_values = []
+        test_values = []
+        for day in day_values:
+            # number of call list data
+            control_value = show_df[title][(show_df['robot_id']==control_robot_id) & (show_df['day']==day)].values
+            control_values.append(pretect_list_crash(control_value))
+            test_value = show_df[title][(show_df['robot_id']==test_robot_id) & (show_df['day']==day)].values
+            test_values.append(pretect_list_crash(test_value))
+        control_key = title + '_control'
+        test_key = title + '_test'
+        return_dict[control_key] = control_values
+        return_dict[test_key] = test_values
+    return return_dict
+        
 
 def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
-    # show_df.rename(columns={'count':'quantity'}, inplace= True)
+    # data analysis
     day_df = show_df['day']
     day_drop_duplicates =  day_df.drop_duplicates(keep="first", inplace=False)
     day_values = day_drop_duplicates.values
     x_axis_data = list(dict.fromkeys(day_drop_duplicates.apply(convert_day_format).values))
-    control_y_axis = []
-    test_y_axis = []
-    for day in day_values:
-        # number of call list data
-        control_y = show_df['count'][(show_df['robot_id']==control_robot_id) & (show_df['day']==day)].values
-        control_y_axis.append(pretect_list_crash(control_y))
-        test_y = show_df['count'][(show_df['robot_id']==test_robot_id) & (show_df['day']==day)].values
-        test_y_axis.append(pretect_list_crash(test_y))
-    print(control_y_axis)
-    print(test_y_axis)
-    plt.subplots_adjust(hspace=0.5)
-    # plot 1:
-    plt.subplot(2,2,1)
-    plt.title('plot 1')
-    
-    # plt.plot(x_axis_data,control_y_axis)
+    list_titles = ['count','avgbillsec noFG','avgtalkround noFG','A']
+    return_dict = {}
+    for title in list_titles:
+        control_values = []
+        test_values = []
+        for day in day_values:
+            # number of call list data
+            control_value = show_df[title][(show_df['robot_id']==control_robot_id) & (show_df['day']==day)].values
+            control_values.append(pretect_list_crash(control_value))
+            test_value = show_df[title][(show_df['robot_id']==test_robot_id) & (show_df['day']==day)].values
+            test_values.append(pretect_list_crash(test_value))
+        control_key = title + '_control'
+        test_key = title + '_test'
+        return_dict[control_key] = control_values
+        return_dict[test_key] = test_values
+    print(return_dict)
     # the wodth of the bars
     width = 0.35
     x = np.arange(len(x_axis_data))
-    print('x:{}'.format(x))
-    rects1 = plt.bar(x - width / 2,control_y_axis,width=width,label=control_robot_id)
-    rects2 = plt.bar(x + width / 2,test_y_axis,width=width,label=test_robot_id)
+    plt.subplots_adjust(hspace=0.25)
+    # plot 1:
+    plt.subplot(2,2,1)
+    # plt.title('plot 1')
+    count_rects1 = plt.bar(x - width / 2,return_dict['count_control'],width=width,label=control_robot_id)
+    count_rects2 = plt.bar(x + width / 2,return_dict['count_test'],width=width,label=test_robot_id)
     plt.legend()
-    plt.bar_label(rects1,padding=3)
-    plt.bar_label(rects2,padding=3)
+    plt.bar_label(count_rects1,padding=3)
+    plt.bar_label(count_rects2,padding=3)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
     # plot 2:
-    # plt.subplot(2,2,2)
+    plt.subplot(2,2,2)
     # plt.title('plot 2')
     # plt.xticks(rotation=60)
     # figure_one_y_axis = show_df['count']
     # plt.plot(x_axis_data,y_axis_daya)
+    avgbillsec_rects1 = plt.bar(x - width / 2,return_dict['avgbillsec noFG_control'],width=width,label=control_robot_id)
+    avgbillsec_rects2 = plt.bar(x + width / 2,return_dict['avgbillsec noFG_test'],width=width,label=test_robot_id)
+    plt.legend()
+    plt.bar_label(avgbillsec_rects1,padding=3)
+    plt.bar_label(avgbillsec_rects2,padding=3)
+    plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
+    plt.tight_layout()
 
     # plot 3:
-    # plt.subplot(2,2,3)
+    plt.subplot(2,2,3)
     # plt.title('plot 3')
     # plt.xticks(rotation=60)
     # figure_one_y_axis = show_df['count']
     # plt.plot(x_axis_data,y_axis_daya)
+    avgtalkround_rects1 = plt.bar(x - width / 2,return_dict['avgtalkround noFG_control'],width=width,label=control_robot_id)
+    avgtalkround_rects2 = plt.bar(x + width / 2,return_dict['avgtalkround noFG_test'],width=width,label=test_robot_id)
+    plt.legend()
+    plt.bar_label(avgtalkround_rects1,padding=3)
+    plt.bar_label(avgtalkround_rects2,padding=3)
+    plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
+    plt.tight_layout()
 
     # plot 4:
-    # plt.subplot(2,2,4)
+    plt.subplot(2,2,4)
     # plt.title('plot 4')
     # plt.xticks(rotation=60)
     # figure_one_y_axis = show_df['count']
     # plt.plot(x_axis_data,y_axis_daya)
+    A_rects1 = plt.bar(x - width / 2,return_dict['A_control'],width=width,label=control_robot_id)
+    A_rects2 = plt.bar(x + width / 2,return_dict['A_test'],width=width,label=test_robot_id)
+    plt.legend()
+    plt.bar_label(A_rects1,padding=3)
+    plt.bar_label(A_rects2,padding=3)
+    plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
+    plt.tight_layout()
 
     # overview    
     plt.suptitle('RUNOOB subplot Test')
