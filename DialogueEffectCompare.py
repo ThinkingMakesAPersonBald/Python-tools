@@ -2,16 +2,17 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-25 13:51:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-25 21:18:21
+LastEditTime: 2022-08-26 10:21:36
 FilePath: /Python-tools/DialogueEffectCompare.py
 Description: AIRudder 对话效果数据对比
 
 Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved. 
 '''
 
+from cProfile import label
 import os
 from re import I
-from turtle import screensize
+from turtle import screensize, width
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -72,34 +73,28 @@ def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
     for day in day_values:
         # number of call list data
         control_y = show_df['count'][(show_df['robot_id']==control_robot_id) & (show_df['day']==day)].values
-        # print(control_y)
-        # if len(control_y) > 0:
-        #     control_y_axis.append(control_y[0])
         control_y_axis.append(pretect_list_crash(control_y))
         test_y = show_df['count'][(show_df['robot_id']==test_robot_id) & (show_df['day']==day)].values
         test_y_axis.append(pretect_list_crash(test_y))
-        # if len(test_y) > 0:
-        #     test_y_axis.append(test_y[0])
-        # else:
-        #     test_y_axis.append(0) 
     print(control_y_axis)
     print(test_y_axis)
-        
-    # day_values = day_df.apply(convert_day_format).values
-    # y_axis_daya = show_df['quantity'][show_df['robot_id']==control_robot_id].values
-    # y_axis_daya = show_df['quantity']
-    
-    # print(test_y_axis)
-    # print(day_values)
-    # print(y_axis_daya)
-    # plt.subplots_adjust(hspace=0.5)
+    plt.subplots_adjust(hspace=0.5)
     # plot 1:
-    # plt.subplot(2,2,1)
-    # plt.title('plot 1')
-    # plt.xticks(rotation=60)
-    # figure_one_y_axis_1 = show_df['quantity'][show_df['robot_id']==control_robot_id]
-    # figure_one_y_axis_2 = show_df['quantity'][show_df['robot_id']==test_robot_id]
-    # plt.plot(x_axis_data,y_axis_daya)
+    plt.subplot(2,2,1)
+    plt.title('plot 1')
+    
+    # plt.plot(x_axis_data,control_y_axis)
+    # the wodth of the bars
+    width = 0.35
+    x = np.arange(len(x_axis_data))
+    print('x:{}'.format(x))
+    rects1 = plt.bar(x - width / 2,control_y_axis,width=width,label=control_robot_id)
+    rects2 = plt.bar(x + width / 2,test_y_axis,width=width,label=test_robot_id)
+    plt.legend()
+    plt.bar_label(rects1,padding=3)
+    plt.bar_label(rects2,padding=3)
+    plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
+    plt.tight_layout()
     # plot 2:
     # plt.subplot(2,2,2)
     # plt.title('plot 2')
@@ -122,8 +117,8 @@ def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
     # plt.plot(x_axis_data,y_axis_daya)
 
     # overview    
-    # plt.suptitle('RUNOOB subplot Test')
-    # plt.show()
+    plt.suptitle('RUNOOB subplot Test')
+    plt.show()
 
 
 if __name__ == '__main__':
