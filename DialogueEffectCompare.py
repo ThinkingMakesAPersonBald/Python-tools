@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-25 13:51:01
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-08-26 13:20:47
+LastEditTime: 2022-08-26 14:39:41
 FilePath: /Python-tools/DialogueEffectCompare.py
 Description: AIRudder 对话效果数据对比
 
@@ -13,7 +13,7 @@ from cProfile import label
 import os
 from re import I
 from tkinter import font
-from turtle import screensize, width
+from turtle import screensize, title, width
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -96,51 +96,53 @@ def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
     return_dict = data_processing(show_df=show_df,list_titles=list_titles,control_robot_id=control_robot_id,test_robot_id=test_robot_id)
     x_axis_data = return_dict['day']
     # the wodth of the bars
-    width = 0.35
+    width = 0.45
     x = np.arange(len(x_axis_data))
+    # plot common setting
     plt.subplots_adjust(hspace=0.1)
-    control_label = 'Control Robot id:{}'.format(control_robot_id)
-    test_label = 'Test Robot id:{}'.format(test_robot_id)
+    plt.figure(dpi=72,figsize=(16,12))
+    control_label = 'Control:{}'.format(control_robot_id)
+    test_label = 'Test:{}'.format(test_robot_id)
     # plot 1:
     plt.subplot(3,2,1)
     plt.title(list_titles[0] + ' of call')
-    count_rects1 = plt.bar(x - width / 2,return_dict['count_control'],width=width,label=control_label)
-    count_rects2 = plt.bar(x + width / 2,return_dict['count_test'],width=width,label=test_label)
-    plt.legend()
-    plt.bar_label(count_rects1,padding=3,rotation=90,fontsize= 6)
-    plt.bar_label(count_rects2,padding=3,rotation=90,fontsize= 6)
+    count_rects1 = plt.bar(x - width / 2,return_dict['count_control'],width=width)
+    count_rects2 = plt.bar(x + width / 2,return_dict['count_test'],width=width)
+    # plt.legend()
+    plt.bar_label(count_rects1,padding=3,rotation=90,fontsize= 8)
+    plt.bar_label(count_rects2,padding=3,rotation=90,fontsize= 8)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
     # plot 2:
     plt.subplot(3,2,2)
     plt.title(list_titles[1])
-    avgbillsec_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgbillsec noFG_control']],width=width,label=control_label)
-    avgbillsec_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgbillsec noFG_test']],width=width,label=test_label)
-    plt.legend()
-    plt.bar_label(avgbillsec_rects1,padding=3,rotation=90,fontsize= 6)
-    plt.bar_label(avgbillsec_rects2,padding=3,rotation=90,fontsize= 6)
+    avgbillsec_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgbillsec noFG_control']],width=width)
+    avgbillsec_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgbillsec noFG_test']],width=width)
+    # plt.legend()
+    plt.bar_label(avgbillsec_rects1,padding=3,rotation=90,fontsize= 8)
+    plt.bar_label(avgbillsec_rects2,padding=3,rotation=90,fontsize= 8)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
 
     # plot 3:
     plt.subplot(3,2,3)
     plt.title(list_titles[2])
-    avgtalkround_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgtalkround noFG_control']],width=width,label=control_label)
-    avgtalkround_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgtalkround noFG_test']],width=width,label=test_label)
-    plt.legend()
-    plt.bar_label(avgtalkround_rects1,padding=3,rotation=90,fontsize= 6)
-    plt.bar_label(avgtalkround_rects2,padding=3,rotation=90,fontsize= 6)
+    avgtalkround_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgtalkround noFG_control']],width=width)
+    avgtalkround_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['avgtalkround noFG_test']],width=width)
+    # plt.legend()
+    plt.bar_label(avgtalkround_rects1,padding=3,rotation=90,fontsize= 8)
+    plt.bar_label(avgtalkround_rects2,padding=3,rotation=90,fontsize= 8)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
 
     # plot 4:
     plt.subplot(3,2,4)
     plt.title(list_titles[3] + ' label rate')
-    A_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['A_control']],width=width,label=control_label)
-    A_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['A_test']],width=width,label=test_label)
-    plt.legend()
-    plt.bar_label(A_rects1,padding=3,rotation=90,fontsize= 6)
-    plt.bar_label(A_rects2,padding=3,rotation=90,fontsize= 6)
+    A_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['A_control']],width=width)
+    A_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['A_test']],width=width)
+    # plt.legend()
+    plt.bar_label(A_rects1,padding=3,rotation=90,fontsize= 8)
+    plt.bar_label(A_rects2,padding=3,rotation=90,fontsize= 8)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
 
@@ -150,13 +152,20 @@ def draw_chart(show_df: pd.DataFrame,control_robot_id,test_robot_id):
     A_rects1 = plt.bar(x - width / 2,[float('{:.2f}'.format(i)) for i in return_dict['E_control']],width=width,label=control_label)
     A_rects2 = plt.bar(x + width / 2,[float('{:.2f}'.format(i)) for i in return_dict['E_test']],width=width,label=test_label)
     plt.legend()
-    plt.bar_label(A_rects1,padding=3,rotation=90,fontsize= 6)
-    plt.bar_label(A_rects2,padding=3,rotation=90,fontsize= 6)
+    plt.bar_label(A_rects1,padding=3,rotation=90,fontsize= 8)
+    plt.bar_label(A_rects2,padding=3,rotation=90,fontsize= 8)
     plt.xticks(ticks=x,labels=x_axis_data,rotation=60)
     plt.tight_layout()
 
     # overview    
-    plt.suptitle('Comparison of control & test effect({} vs {})'.format(control_robot_id,test_robot_id))
+    file_name = 'Comparison of control & test effect({} vs {})'.format(control_robot_id,test_robot_id)
+    out_put_file_name = './' + file_name + '.png'
+    plt.suptitle(file_name)
+    # out_put_path = '/Users/peixinhua/Downloads/image'
+    # if os.path.exists(out_put_path):
+    #     os.makedirs(out_put_path)
+    # plt.savefig(os.path.join(out_put_path,file_name + '.jpg'))
+    plt.savefig(out_put_file_name)
     plt.show()
 
 
