@@ -2,13 +2,14 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-31 17:16:14
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-09-01 11:13:07
+LastEditTime: 2022-09-01 11:32:38
 FilePath: /Python-tools/PandasOperateExcel.py
 Description: 
 
 Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved. 
 '''
 
+from posixpath import split
 from urllib.robotparser import RobotFileParser
 import pandas as pd
 import os
@@ -62,7 +63,18 @@ def merge_robot_message():
     output_df = pd.read_excel(output_path)
     # output message merge robot message
     merge_df = pd.merge(output_df,robot_message_df,on='CallID',how='inner')
+    # data decomposition
+    split_dict = {'Indonesia':['Shopee','Julo'],
+                'Mexico':['Opay','OKAYMOBILE2'],
+                'Philippine':['Finupp','OLP']
+                    }
+    for country in split_dict.keys():
+        split_df = merge_df[merge_df['Country'] == country]
+        path = os.path.join(dire_path,'{}_annotation.xlsx'.format(country))
+        split_df.to_excel(path)
     print('robot_message_df {}'.format(merge_df))
+
+
 
 if __name__ == '__main__':
     # if output file exist handle data
