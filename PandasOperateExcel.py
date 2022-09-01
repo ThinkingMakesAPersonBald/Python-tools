@@ -2,14 +2,13 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-08-31 17:16:14
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-09-01 11:32:38
+LastEditTime: 2022-09-01 14:22:21
 FilePath: /Python-tools/PandasOperateExcel.py
 Description: 
 
 Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved. 
 '''
 
-from posixpath import split
 from urllib.robotparser import RobotFileParser
 import pandas as pd
 import os
@@ -55,24 +54,41 @@ def merge_robot_message():
     robot_vs_country_df = pd.read_excel(robot_vs_country_path)
     robot_message_path = os.path.join(dire_path,merge_file_path)
     robot_message_df = pd.read_excel(robot_message_path)
-    left_join = pd.merge(robot_message_df,robot_vs_country_df,on= 'company',how='inner')
-    robot_message_df = left_join[['callid','robotname','company','day','Country']]
+    # left_join = pd.merge(robot_message_df,robot_vs_country_df,on= 'company',how='left')
+    # robot_message_df = left_join[['callid','robotname','company','day','Country']]
     robot_message_df = robot_message_df.rename(columns={'callid':'CallID'})
+    robot_message_df = robot_message_df[['CallID','robotname','company','day']]
+    # print(robot_message_df)
+    print('robot_message_df length {}'.format(len(robot_message_df)))
     # join output message
     output_path = os.path.join(dire_path,output_file_name)
     output_df = pd.read_excel(output_path)
+    print('output_df length {}'.format(len(output_df)))
     # output message merge robot message
-    merge_df = pd.merge(output_df,robot_message_df,on='CallID',how='inner')
+    merge_df = pd.merge(output_df,robot_message_df,on='CallID',how='left')
+    merge_df = pd.merge(merge_df,robot_vs_country_df[['company','Country']],on= 'company',how='left')
+    merge_df.to_excel(os.path.join(dire_path,'merge.xlsx'))
+    print('merge_df {}'.format(merge_df))
+    print('merge_df length {}'.format(len(merge_df)))
     # data decomposition
-    split_dict = {'Indonesia':['Shopee','Julo'],
-                'Mexico':['Opay','OKAYMOBILE2'],
-                'Philippine':['Finupp','OLP']
-                    }
-    for country in split_dict.keys():
-        split_df = merge_df[merge_df['Country'] == country]
-        path = os.path.join(dire_path,'{}_annotation.xlsx'.format(country))
-        split_df.to_excel(path)
-    print('robot_message_df {}'.format(merge_df))
+    # traverse country and other data
+    country_list = list(merge_df['Country'].drop_duplicates())
+    for country in country_list:
+        range = 100
+        save_df = pd.DataFrame(columns= merge_df.columns)
+        country_df = merge_df[merge_df['Country']== country]
+        companies = list(country_df['company'].drop_duplicates())
+        if not len(companies) > 1:
+            range = 200
+        for company in companies:
+            company_df = country_df[country_df['company']== company]
+            call_ids = list(company_df['CallID'].drop_duplicates())[:range]
+            for call_id in call_ids:
+                filter_df = company_df[company_df['CallID'] == call_id]
+                save_df = save_df.append(filter_df)
+        save_path = os.path.join(dire_path,'{}_annotation.xlsx'.format(country))
+        save_df.to_excel(save_path)
+        print('save_path {}'.format(save_path))
 
 
 
