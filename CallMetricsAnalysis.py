@@ -2,7 +2,7 @@
 Author: xinhua.pei xinhua.pei@airudder.com
 Date: 2022-09-15 14:37:45
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-09-15 17:01:50
+LastEditTime: 2022-09-15 17:34:07
 FilePath: /Python-tools/CallMetricsAnalysis.py
 Description: 根据call 数据明细，统计对应的平均通话时长、平均对话轮次、Intention 分布比例
 
@@ -13,7 +13,8 @@ import pandas as pd
 import warnings
 
 
-root_path = '/Users/peixinhua/Downloads/Action revoke'
+# root_path = '/Users/peixinhua/Downloads/Action revoke'
+root_path = '/Users/peixinhua/Downloads/Meaningful interrupt'
 content_dict = {}
 warnings.simplefilter("ignore")
 
@@ -58,6 +59,7 @@ return {*}
 '''
 def data_statistics(para: dict):
     merge_list = []
+    merge_df = pd.DataFrame()
     for key in list(para.keys()):
         temp_df = pd.DataFrame(para[key])
         avg_bill_sec = temp_df['bill_sec'].mean()
@@ -72,31 +74,20 @@ def data_statistics(para: dict):
         merge_dict['avg_bill_sec'] = avg_bill_sec
         merge_dict['avg_talk_round'] = avg_talk_round
         # 遍历获取所有label 占比
-        # print('avg_bill_sec: {}\n avg_talk_round: {} \n label_distributed: {} \n labels {}'.format(avg_bill_sec,avg_talk_round,label_distributed,labels))
         for label in labels:
             count = label_distributed[label]
             rate = count / length
             name = label + '_rate'
             merge_dict[name] = rate
-        merge_list.append(merge_dict)
-    merge_df = pd.DataFrame(merge_list)
+        single_df = pd.DataFrame(merge_dict,index=[0])
+        merge_list.append(single_df)
+        # merge_list.append(merge_dict)
+    
+    merge_df = pd.concat(merge_list)
+    print(merge_list)
     merge_df.to_excel(os.path.join('/Users/peixinhua/Downloads/',root_path.split('/')[-1] + '.xlsx'))
     print(merge_df)
     
-
-
-
-        
-        
-
-
-                
-
-        
-
-
-
-
 
 def main():
     judge_file_format()
