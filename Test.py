@@ -1,31 +1,8 @@
 '''
 Author: xinhua.pei xinhua.pei@airudder.com
-Date: 2022-08-10 19:48:20
+Date: 2023-03-12 17:21:13
 LastEditors: xinhua.pei xinhua.pei@airudder.com
-LastEditTime: 2022-09-05 15:18:40
+LastEditTime: 2023-03-12 17:21:33
 FilePath: /Python-tools/Test.py
-Description: 
-
-Copyright (c) 2022 by xinhua.pei xinhua.pei@airudder.com, All Rights Reserved. 
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
-# -*- coding: utf-8 -*
-# Declared using continuation character(\):
-s = 1 + 2 + 3 + \
-    4 + 5 + 6 + \
-    7 + 8 + 9
-print(s)
-# Declared using parentheses():
-n = (1 * 2 * 3 + 7 + 8 + 9)
-print(n)
-# Declared using square brackets[]:
-footballer = ['MESSI',
-            'NEYMAR',
-            'SUAREZ']
-print(footballer)
-# declared using braces {}:
-x = {1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9}
-print(x)
-
-# declared using semicolons(;):
-flag = 2; ropes = 3; pole = 4
-
