@@ -8,7 +8,7 @@ Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查�
 '''
 import os
 
-rootFolder = '/Users/peixinhua/Desktop/1级33册 2'
+rootFolder = '/Users/peixinhua/Desktop/1级33册 copy'
 
 def main():
     index = 0
@@ -21,6 +21,7 @@ def main():
                 if file.endswith('.mp3'):
                     oldName = os.path.join(wholeFolderName,file)
                     newName = os.path.join(wholeFolderName,folderName + '.'+ file)
+                    print(newName)
                     os.rename(oldName,newName)
     pass
 
